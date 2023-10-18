@@ -10,19 +10,23 @@
   <a href="https://github.com/hiroi-sora/Umi-OCR/releases/latest">
     <img src="https://img.shields.io/github/v/release/hiroi-sora/Umi-OCR?style=flat-square" alt="Umi-OCR">
   </a>
-  <a href="LICENSE">
+  <a href="License">
     <img src="https://img.shields.io/github/license/hiroi-sora/Umi-OCR?style=flat-square" alt="LICENSE">
   </a>
   <a href="#下载">
     <img src="https://img.shields.io/github/downloads/hiroi-sora/Umi-OCR/total?style=flat-square" alt="forks">
   </a>
-  <img src="https://img.shields.io/github/stars/hiroi-sora/Umi-OCR?style=flat-square" alt="stars">
-  <img src="https://img.shields.io/github/forks/hiroi-sora/Umi-OCR?style=flat-square" alt="forks">
+  <a href="https://star-history.com/#hiroi-sora/Umi-OCR">
+    <img src="https://img.shields.io/github/stars/hiroi-sora/Umi-OCR?style=flat-square" alt="stars">
+  </a>
+  <a href="https://github.com/hiroi-sora/Umi-OCR/forks">
+    <img src="https://img.shields.io/github/forks/hiroi-sora/Umi-OCR?style=flat-square" alt="forks">
+  </a>
 </p>
 
 <div align="center">
   <strong>免费，开源，可批量的离线OCR软件</strong><br>
-  <sub>适用于 Windows10,11 平台</sub>
+  <sub>适用于 Windows7 x64 及以上</sub>
 </div>
 
 <div align="center">
@@ -52,7 +56,7 @@
 - **高效**：采用 PaddleOCR-json C++ 识别引擎。只要电脑性能足够，通常比在线OCR服务更快。
 - **精准**：默认使用PPOCR-v3模型库。除了能准确辨认常规文字，对手写、方向不正、杂乱背景等情景也有不错的识别率。可设置**忽略区域**排除水印、设置**文块后处理**合并排版段落，得到规整的文本。
 
-![](https://tupian.li/images/2022/09/29/1.3-e46104c4fc60cabd.png)
+![](https://tupian.li/images/2023/04/26/6447fe3273efd.png)
 
 ![](https://tupian.li/images/2022/09/29/1.3-.png)
 
@@ -63,24 +67,31 @@
 - [忽略区域](#忽略区域功能) 如何排除截图水印处的文字？
 - [多国语言](#添加多国语言) 添加更多PP-OCR支持的语言模型库！
 - [命令行调用](#命令行调用) 用命令行或第三方工具来调用Umi-OCR！
+- [联动翻译软件](#goto-3) 截图OCR后发送指定按键，触发翻译软件进行翻译
 - [更多小技巧](#goto-2)
 - [问题排除](#问题排除) 无法启动引擎 / 多屏幕截图异常 ？
 
 ## 下载
 
-> Umi-OCR 软件本体含 **简体中文&英文** 通用识别库。  
-> 配套 **多国语言识别扩展包** 可导入 `繁中,英,日,韩,俄,德,法` 识别库，请按需下载。
+#### v2.0.0
 
-Github下载：[Release v1.3.3](https://github.com/hiroi-sora/Umi-OCR/releases/tag/v1.3.3)
+全新重构的v2预览版本已开放测试，[欢迎体验](https://github.com/hiroi-sora/Umi-OCR_v2)。
+
+#### v1.3.7
+
+Github下载：[Release v1.3.7](https://github.com/hiroi-sora/Umi-OCR/releases/tag/v1.3.7)
 
 蓝奏云下载：[https://hiroi-sora.lanzoul.com/s/umi-ocr](https://hiroi-sora.lanzoul.com/s/umi-ocr)
 
+> 配套 **多国语言识别扩展包** 可导入 `繁中,英,日,韩,俄,德,法` 识别库，请按需下载。
+
+#### 使用源代码
+
 <details>
-<summary>使用源代码：</summary>
+<summary>展开</summary>
 
 - main分支可能含有开发中的新功能。若您想使用稳定版本，建议切换到[最新的Release分支](https://github.com/hiroi-sora/Umi-OCR/branches)。
 - 安装依赖库：`pip install -r requirements.txt`
-- 打包还需要：`pip install pyinstaller`
 - 运行 `main.py` 启动程序。测试无异常后，运行 `to_exe.py` 一键打包。
 - 打包后，请将引擎组件 [PaddleOCR-json 整个文件夹](PaddleOCR-json) 放置于exe同目录下！
 - 打包后，请将引擎组件 [PaddleOCR-json 整个文件夹](PaddleOCR-json) 放置于exe同目录下！！
@@ -88,11 +99,11 @@ Github下载：[Release v1.3.3](https://github.com/hiroi-sora/Umi-OCR/releases/t
 
 </details>
 
-## 兼容性
+## 兼容性（Paddle引擎）
 
-- 系统支持 Win10 x64 及以上版本。
-- CPU必须具有AVX指令集。
-- 出现初始化引擎失败等问题时请参考 [问题排除](#问题排除) 。
+- 支持 Win7 x64 及以上系统。
+- CPU必须具有AVX指令集。（凌动、安腾、赛扬和奔腾处理器可能不兼容）
+- 若您的CPU不符合以上条件，请使用 [v2](https://github.com/hiroi-sora/Umi-OCR_v2) Rapid引擎版本。
 
 ## 前言
 
@@ -117,9 +128,11 @@ Github下载：[Release v1.3.3](https://github.com/hiroi-sora/Umi-OCR/releases/t
 
 ![](https://tupian.li/images/2022/09/29/1-w-.png)
 
+可以设置截图后生成一个预览窗口。预览窗口可以被钉在屏幕顶层，或调为半透明，方便对比查看。
+
 #### 粘贴图片到软件
 
-在任何地方（如文件管理器，网页，微信）复制图片，软件上点击粘贴按钮，自动识别。
+在任何地方（如文件管理器，网页，微信）复制图片，软件上点击粘贴按钮或快捷键，自动识别。
 
 ![](https://tupian.li/images/2022/09/29/2-w-.png)
 
@@ -133,47 +146,16 @@ Github下载：[Release v1.3.3](https://github.com/hiroi-sora/Umi-OCR/releases/t
 
 <a id="goto-1"></a>
 
-## 文本块后处理（排版优化）
+## 文本块后处理（合并段落）
 
-OCR识别出的文本是按“块”划分的，通常一行文字分为一块，有时还会将一行误划分为多块，这给阅读带来了不便。**文本块后处理**就是对文本块进行再加工的过程，合并同一行或同一段落内的文字，按正确的顺序排序。
+OCR识别出的文本是按“块”划分的，通常一行文字分为一块，有时还会将一行误划分为多块，这给阅读带来了不便。您可以在Umi-OCR设置页的**合并段落**中选择恰当的方案，合并同一行或同一段落内的文字，按正确的顺序排序。
 
-#### 下图表示不同排版应该选用何种处理方案：
+#### 排版方案：
 
-![](https://tupian.li/images/2022/09/29/-10-.png)
-
-#### 所有排版方案一览：
-
-<details>
-<summary>展开</summary><BR>
-
-##### 横排-优化单行
-
-将误划分为多块的同一行文字合并到一行。
-
-##### 横排-合并多行-左对齐
-
-将多个左对齐的行视为同一段落，合并文字。左侧未对齐或行距过大的行视为下一段落。
-
-##### 横排-合并多行-自然段
-
-将多个左对齐的行视为同一段落，且第一行的开头允许多空出两个全角空格的宽度。
-
-##### 横排-合并多行-模糊匹配
-
-只要垂直投影有重叠，行高一致，距离较近的文本块，视为同一段落。
-
-##### 竖排-从左到右-单行  /  竖排-从右至左-单行
-
-优化竖排识别，合并同一行文字，按从左到右或从右到左的顺序输出每一行。
-注意，必须搭配支持竖排识别的模型库（识别语言）一起使用。
-
-#### 可视化预览：
-
-可以在忽略区域编辑器内预览文本块后处理的效果。编辑器中以虚线框标出识别到、经过后处理的文字块。
-
-这里仅仅是借用了编辑器来展示后处理的效果，实际运行任务时 **忽略区域机制 早于 后处理机制** 执行，不受后处理的影响。
-
-</details>
+- **单行**：合并同一行的文字，适合绝大部分情景。
+- **多行-自然段**：智能识别、合并属于同一段落的文字，适合绝大部分情景。
+- **多行-代码段**：尽可能还原原始排版的缩进与空格。适合识别代码片段，或需要保留空格的场景。
+- **竖排**：适合竖排排版。需要与同样支持竖排识别的模型库配合使用。
 
 ## 忽略区域功能
 
@@ -264,7 +246,7 @@ OCR识别出的文本是按“块”划分的，通常一行文字分为一块�
 <details>
 <summary>展开</summary><BR>
 
-`v1.3.3` 后支持通过命令行调用Umi-OCR，执行部分识图任务。
+支持通过命令行调用Umi-OCR，执行部分识图任务。
 
 > 若软件未在运行，则命令行会启动软件并执行任务。若软件已在后台运行，则命令行会直接调用后台的软件执行任务。这样多次调用时可以节省初始化的时间。
 
@@ -307,6 +289,8 @@ OCR识别出的文本是按“块”划分的，通常一行文字分为一块�
 
 `umiocr.exe -img="D:/图库,E:/my img/图片.png"`
 
+若路径含中文，请务必加双引号。
+
 ##### 指令5：剪贴板识图
 
 `umiocr.exe -clipboard`
@@ -314,6 +298,55 @@ OCR识别出的文本是按“块”划分的，通常一行文字分为一块�
 ##### 指令6：截屏识图 
 
 `umiocr.exe -screenshot`
+
+##### 指令7：切换识别语言
+
+`umiocr.exe -language=序号`
+
+“序号”为软件设置里各个语言的排序，从0开始。从上往下数，比如简中排第一，那么是`-language=0`。繁中排第二，那么是`-language=1`。英文排第四，`-language=3`。以此类推。
+
+
+</details>
+
+<a id="goto-3"></a>
+
+#### 复制后发送按键 & 联动翻译软件
+
+<details>
+<summary>展开</summary><BR>
+
+##### 发送指定按键
+
+`v1.3.5` 起，支持快捷识图完成并将结果写入剪贴板后，发送一组指定按键，触发翻译软件进行翻译。当然也可以用于触发你的AHK脚本等，实现更多奇奇怪怪的功能。
+
+`v1.3.6` 起，截图联动是一个单独的功能，由独立快捷键触发，与常规的截图OCR互不影响。
+
+这是一个隐藏高级功能，请先勾选设置页底部的`高级选项`，重启软件。设置页的`快捷识图`板块会多出两组条目：
+
+- **截图联动 快捷键**：您可设置一组快捷键，来触发该功能。
+- **联动发送按键**：触发识图，并将识别结果写入剪贴板后，可以发送一组指定按键。**次**表示重复发送按键的次数。
+
+经过测试，Umi-OCR可以顺利地与 [CopyTranslator](https://github.com/CopyTranslator/CopyTranslator) 及 [沙拉查词](https://github.com/crimx/ext-saladict) 联动触发翻译，以下是配置方法。
+
+##### 联动 CopyTranslator
+
+1. 下载 [CopyTranslator](https://github.com/CopyTranslator/CopyTranslator)。这里示例所用的版本是 `v11` 。
+2. 如果不介意CopyTranslator监听剪贴板（每次剪贴板变动都尝试翻译），那么勾选Umi-OCR的`自动复制结果` 和CopyTranslator的`监听剪贴板`即可。
+    ![](https://tupian.li/images/2023/06/20/64915f826f16d.png)
+
+3. 如果不一定始终开启监听剪贴板，又希望Umi-OCR在任何情况下能唤起CopyTranslator，可以这样处理：CopyTranslator在设置里勾选`双Ctrl+C翻译`；Umi-OCR的`联动发送按键`录制为`ctrl+c`，`2`次。
+    ![](https://tupian.li/images/2023/06/20/6491611305570.png)
+
+##### 联动 沙拉查词
+
+1. [沙拉查词](https://github.com/crimx/ext-saladict) 是一款浏览器插件，支持Chrome、Edge等浏览器，[这是下载页面](https://saladict.crimx.com/download.html)。下面以Edge浏览器为例讲解配置方法。其他浏览器大同小异。（Firefox支持不完善，不推荐。）
+2. 打开沙拉查词的插件设置页面，左边栏选择`基本选项`，右边栏勾选`后台保持运行`。（如果不勾选也能使用，但必须保持浏览器开启。）
+3. 左边栏点击`隐私设置`，右边栏点击`设置快捷键`。
+    ![](https://tupian.li/images/2023/06/20/649165cae4b87.png)
+4. 在弹出的新页面中，将沙拉查词的`在独立窗口中搜索剪贴板内容`设置任意一组快捷键，然后右边改为`全局`。Umi-OCR的`联动发送按键`录制为相同快捷键，`1`次。
+    ![](https://tupian.li/images/2023/06/20/649165faa434f.png)
+5. 回到沙拉查词的设置页，左边栏点击`权限管理`，勾选`读取剪贴板`。
+    ![](https://tupian.li/images/2023/06/20/649165f7dbf18.png)
 
 </details>
 
@@ -371,7 +404,9 @@ OCR识别出的文本是按“块”划分的，通常一行文字分为一块�
 <details>
 <summary>展开</summary><BR>
 
-> 本项目离线引擎暂不支持在没有AVX指令集的CPU上运行，下图指示如何判断是否由此原因引起。
+> PaddleOCR引擎暂不支持在没有AVX指令集的CPU上运行，遇到该问题可尝试换用RapidOCR引擎。
+
+> 下图指示如何判断该问题是否由缺失AVX引起。
 
 ![CPUAVX.png](https://tupian.li/images/2022/11/04/63651e9eed1df.png)
 
@@ -383,8 +418,6 @@ OCR识别出的文本是按“块”划分的，通常一行文字分为一块�
 | AMD   | 推土机架构及之后的产品，如锐龙Ryzen、速龙Athlon、FX 等   | K10架构及之前的产品                                         |
 
 > 可通过 [CPU-Z](https://www.cpuid.com/downloads/cpu-z/cpu-z_2.03-cn.zip) 软件查看自己CPU的指令集信息。
-> 
-> 若具有AVX指令集，仍引发了初始化引擎失败的报错，请提issue。
 
 </details>
 
@@ -536,6 +569,28 @@ OCR识别出的文本是按“块”划分的，通常一行文字分为一块�
 ## 更新日志
 
 点击版本号链接可前往对应备份分支。
+
+##### v1.3.7 `2023.10.10`
+- Paddle引擎兼容Win7 x64 。
+
+##### [v1.3.6](https://github.com/hiroi-sora/Umi-OCR/tree/release/1.3.6) `2023.9.26`
+- 新功能：更强大的段落合并方案-`单行/多行自然段/多行代码段`。支持自动判断中/英文段落，采取对应的合并规则。
+- 移除一些过时的段落合并方案。
+- 功能调整：`截图联动` 划分为独立的功能，不受常规截图OCR影响。
+
+##### [v1.3.5](https://github.com/hiroi-sora/Umi-OCR/tree/release/1.3.5) `2023.6.20`
+<!-- 6.5k★ 撒花~ -->
+- 新功能：复制识别结果后，可发送指定按键，以便联动唤起翻译器等工具。
+- 新功能：命令行增加切换识别语言的指令。
+- 修Bug：低配置机器上有概率误报`OCR init timeout: 5s` 。[#154](https://github.com/hiroi-sora/Umi-OCR/issues/154) , [#156](https://github.com/hiroi-sora/Umi-OCR/issues/156)。
+- 调整：默认停止任务30秒后释放一次内存。
+
+##### [v1.3.4](https://github.com/hiroi-sora/Umi-OCR/tree/release/1.3.4) `2023.4.26`
+<!-- 一周年纪念！ -->
+- 新功能：截图预览窗口。
+- 新功能：可用方向键微调截图框位置。
+- 修Bug：拖入图片时有几率卡退主窗口 [issue #126](https://github.com/hiroi-sora/Umi-OCR/issues/126) 。
+- 优化了一些处理流程。
 
 ##### [v1.3.3](https://github.com/hiroi-sora/Umi-OCR/tree/release/1.3.3) `2023.3.19`
 <!-- 4.5k★ 撒花~ -->

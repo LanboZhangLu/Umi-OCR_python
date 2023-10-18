@@ -3,6 +3,7 @@ from utils.config import Config, ScsModeFlag
 from utils.tool import Tool
 from utils.hotkey import Hotkey  # 快捷键
 from ui.win_notify import NotifyClose  # 关闭通知弹窗
+from ui.win_show_image import ShowImage  # 显示图片窗口
 
 # 获取显示器信息
 from win32api import EnumDisplayMonitors, GetMonitorInfo
@@ -95,7 +96,11 @@ class ScreenshotSys():  # 系统截图模式
         clipData = Tool.getClipboardFormat()  # 读取剪贴板
         if clipData == 2:  # 系统截图已保存到剪贴板内存，截图成功
             Log.info(f'  第{self.checkTime}次检查成功')
-            self.__close(True)
+            if Config.get('isShowImage'):  # 显示图片展示窗
+                ShowImage(imgPIL=ImageGrab.grabclipboard())
+                self.__close(False)
+            else:
+                self.__close(True)
             return
         Log.info(f'  第{self.checkTime}次检查')
         self.checkTime += 1
@@ -138,6 +143,7 @@ class ScreenshotWin():  # 内置截图模式
             self.__initWin()
 
         self.imageResult = None  # 结果图片
+        self.sourceBox = None  # 截图包围盒原始信息
         self.drawMode = _DrawMode.ready  # 准备模式
         # 获取所有屏幕的信息，提取其中的坐标信息(虚拟，非物理分辨率)
         scInfos = EnumDisplayMonitors()  # 所有屏幕的信息
@@ -195,7 +201,7 @@ class ScreenshotWin():  # 内置截图模式
                 scRight = s[2]
             if s[3] > scDown:  # 下边缘
                 scDown = s[3]
-            # 计算虚拟屏幕的宽和高
+            # 计算虚拟屏幕的宽和高，请确保屏幕对齐
             scWidth, scHeight = scRight - scLeft, scDown - scUp
         # 多显示器处理完毕
         self.scBoxVirtual = (scLeft, scUp, scRight, scDown,
@@ -263,10 +269,15 @@ class ScreenshotWin():  # 内置截图模式
         # 绑定全局事件
         Hotkey.add('esc', self.__onClose)  # 绑定Esc退出
         Hotkey.add('ctrl+shift+alt+d', self.__switchDebug)  # 切换调试信息
+        # 方向键控制鼠标移动
+        Hotkey.add('up', lambda: self.__keyMotion(0, -1))
+        Hotkey.add('down', lambda: self.__keyMotion(0, 1))
+        Hotkey.add('left', lambda: self.__keyMotion(-1, 0))
+        Hotkey.add('right', lambda: self.__keyMotion(1, 0))
         # 绑定画布事件
-        self.canvas.bind(f'<Button-1>', self.__onDown)  # 左键按下
-        self.canvas.bind(f'<Button-3>', self.__repaint)  # 右键按下
-        self.canvas.bind(f'<ButtonRelease-1>', self.__onUp)  # 左键松开
+        self.canvas.bind('<Button-1>', self.__onDown)  # 左键按下
+        self.canvas.bind('<Button-3>', self.__repaint)  # 右键按下
+        self.canvas.bind('<ButtonRelease-1>', self.__onUp)  # 左键松开
         self.canvas.bind('<Motion>', self.__onMotion)  # 鼠标移动
         self.canvas.bind('<Enter>', self.__onMotion)  # 鼠标进入，用于初始化瞄准线
         Log.info('Umi截图启动')
@@ -316,6 +327,13 @@ class ScreenshotWin():  # 内置截图模式
             self.canvas.itemconfig(self.debugXYText, {'text':
                                                       f'{event.x_root} , {event.y_root}'})
 
+    def __keyMotion(self, x, y):  # 键盘控制鼠标移动
+        if not self.isInitGrab:
+            return
+        pos = Hotkey.getMousePos()
+        pos = (pos[0]+x, pos[1]+y)
+        Hotkey.setMousePos(pos)
+
     def __repaint(self, event):  # 重绘
         Log.info('重绘')
         if self.drawMode == _DrawMode.drag:  # 已在拖拽中
@@ -341,9 +359,10 @@ class ScreenshotWin():  # 内置截图模式
                 box[0], box[2] = box[2], box[0]
             if box[1] > box[3]:
                 box[1], box[3] = box[3], box[1]
+            self.sourceBox = tuple(box)  # 记录缩放比例之前的原始box值
             for i in range(4):
                 box[i] *= self.allScale  # 乘上缩放比例
-            self.imageResult = self.image.crop(box)
+            self.imageResult = self.image.crop(box)  # 裁切，产生最终截图数据
 
     def __onClose(self, event=None):  # 关闭窗口
         if not self.isInitGrab:
@@ -370,6 +389,7 @@ class ScreenshotWin():  # 内置截图模式
             for i in self.flashList:
                 self.canvas.delete(i)
             self.flashList = []
+
         for box in self.scBoxList:
             p1x, p1y, p2x, p2y = box
             p1x -= self.scBoxVirtual[0]
@@ -433,21 +453,26 @@ class ScreenshotWin():  # 内置截图模式
         self.imageResult.save(output, 'BMP')  # 以位图保存
         imgData = output.getvalue()[14:]  # 去除header
         output.close()
-        # 写入剪贴板
-        try:
-            OpenClipboard()  # 打开剪贴板
-            EmptyClipboard()  # 清空剪贴板
-            SetClipboardData(CF_DIB, imgData)  # 写入
-        except Exception as err:
-            self.errMsg = f'位图无法写入剪贴板，请检测是否有其他程序正在占用。\n{err}'
+        if Config.get('isShowImage'):  # 显示图片展示窗
+            b = self.sourceBox
+            p = (b[0], b[1], b[2]-b[0], b[3]-b[1])
+            ShowImage(imgPIL=self.imageResult, imgData=imgData, initPos=p)
             return False
-        finally:
+        else:  # 直接识别
             try:
-                CloseClipboard()  # 关闭
+                OpenClipboard()  # 打开剪贴板
+                EmptyClipboard()  # 清空剪贴板
+                SetClipboardData(CF_DIB, imgData)  # 写入
             except Exception as err:
-                self.errMsg = f'无法关闭剪贴板。\n{err}'
+                self.errMsg = f'位图无法写入剪贴板，请检测是否有其他程序正在占用。\n{err}'
                 return False
-        return True
+            finally:
+                try:
+                    CloseClipboard()  # 关闭
+                except Exception as err:
+                    self.errMsg = f'无法关闭剪贴板。\n{err}'
+                    return False
+            return True
 
 
 SSWin = ScreenshotWin()

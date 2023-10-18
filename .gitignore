@@ -1,0 +1,9 @@
+*
+*/
+!docs
+!ocr
+!PaddleOCR-json
+!ui
+!utils
+!main.py
+**/__pycache__/
